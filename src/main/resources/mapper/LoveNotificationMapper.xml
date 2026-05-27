@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cc.campuscrush.mapper.LoveNotificationMapper">
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO love_notification (user_id, type, from_user_id, from_user_name, from_user_avatar, content, related_id)
+        VALUES (#{userId}, #{type}, #{fromUserId}, #{fromUserName}, #{fromUserAvatar}, #{content}, #{relatedId})
+    </insert>
+
+    <select id="findByUserId" resultType="com.cc.campuscrush.entity.LoveNotification">
+        SELECT * FROM love_notification
+        WHERE user_id = #{userId}
+        ORDER BY create_time DESC
+    </select>
+
+    <select id="countUnread" resultType="int">
+        SELECT COUNT(*) FROM love_notification WHERE user_id = #{userId} AND is_read = 0
+    </select>
+
+    <update id="markAsRead">
+        UPDATE love_notification SET is_read = 1 WHERE id = #{id}
+    </update>
+
+    <update id="markAllAsRead">
+        UPDATE love_notification SET is_read = 1 WHERE user_id = #{userId} AND is_read = 0
+    </update>
+
+</mapper>

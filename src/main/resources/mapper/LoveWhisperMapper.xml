@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cc.campuscrush.mapper.LoveWhisperMapper">
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO love_whisper (from_user_id, to_user_id, content, msg_type, is_read, create_time)
+        VALUES (#{fromUserId}, #{toUserId}, #{content}, #{msgType}, #{isRead}, NOW())
+    </insert>
+
+    <select id="selectByUserIdAndPartnerId" resultType="com.cc.campuscrush.entity.LoveWhisper">
+        SELECT * FROM love_whisper
+        WHERE (from_user_id = #{userId} AND to_user_id = #{partnerId})
+           OR (from_user_id = #{partnerId} AND to_user_id = #{userId})
+        ORDER BY create_time ASC
+    </select>
+
+    <update id="updateIsRead">
+        UPDATE love_whisper SET is_read = 1
+        WHERE from_user_id = #{fromUserId} AND to_user_id = #{toUserId} AND is_read = 0
+    </update>
+
+</mapper>

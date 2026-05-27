@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cc.campuscrush.mapper.LoveAnniversaryMapper">
+    
+    <select id="findAllByUserId" resultType="com.cc.campuscrush.entity.LoveAnniversary">
+        SELECT id, user_id, name, type, date, remind_days, remind_enabled
+        FROM love_anniversary
+        WHERE user_id = #{userId}
+        ORDER BY date ASC
+    </select>
+
+    <select id="findByIdAndUserId" resultType="com.cc.campuscrush.entity.LoveAnniversary">
+        SELECT id, user_id, name, type, date, remind_days, remind_enabled
+        FROM love_anniversary
+        WHERE id = #{id} AND user_id = #{userId}
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO love_anniversary (user_id, name, type, date, remind_days, remind_enabled)
+        VALUES (#{userId}, #{name}, #{type}, #{date}, #{remindDays}, #{remindEnabled})
+    </insert>
+
+    <update id="update">
+        UPDATE love_anniversary
+        SET name = #{name}, type = #{type}, date = #{date}, remind_days = #{remindDays}, remind_enabled = #{remindEnabled}
+        WHERE id = #{id} AND user_id = #{userId}
+    </update>
+
+    <delete id="deleteByIdAndUserId">
+        DELETE FROM love_anniversary WHERE id = #{id} AND user_id = #{userId}
+    </delete>
+
+    <select id="countByUserId" resultType="long">
+        SELECT COUNT(*) FROM love_anniversary WHERE user_id = #{userId}
+    </select>
+
+</mapper>

@@ -1,0 +1,60 @@
+spring:
+  application:
+    name: Campus-Crush
+  datasource:
+    url: ${MYSQL_URL:jdbc:mysql://localhost:3306/campus_crush?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai}
+    username: ${MYSQL_USERNAME:root}
+    password: ${MYSQL_PASSWORD:}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      lettuce:
+        pool:
+          max-active: 10  # 连接池最大连接数
+          max-idle: 10  # 连接池最大空闲连接数
+          min-idle: 1  # 连接池最小空闲连接数
+          time-between-eviction-runs: 10s
+  servlet:
+    multipart:
+      max-file-size: 10MB  # 单个文件最大大小
+      max-request-size: 100MB  # 整个请求最大大小
+  # QQ邮箱SMTP配置（用于发送验证码）
+  mail:
+    host: smtp.qq.com
+    port: 587
+    username: ${QQ_EMAIL:}
+    password: ${QQ_EMAIL_AUTH_CODE:}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: com.cc.campuscrush.entity
+  configuration:
+    map-underscore-to-camel-case: true
+
+server:
+  port: 8081
+
+
+#阿里云OSS,名字可以自定义
+aliyun:
+  oss:
+    endpoint: ${OSS_ENDPOINT:https://oss-cn-beijing.aliyuncs.com}
+    bucketName: ${OSS_BUCKET_NAME:}
+    region: ${OSS_REGION:cn-beijing}
+    accessKeyId: ${OSS_ACCESS_KEY_ID:}
+    accessKeySecret: ${OSS_ACCESS_KEY_SECRET:}
+
+# JWT配置
+jwt:
+  secret: ${JWT_SECRET:}
+  expiration: 86400000 # 过期时间，24小时（毫秒）
+

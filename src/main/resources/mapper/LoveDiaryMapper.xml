@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cc.campuscrush.mapper.LoveDiaryMapper">
+    
+    <select id="findAllByUserId" resultType="com.cc.campuscrush.entity.LoveDiary">
+        SELECT id, user_id, title, content, mood, image, create_time
+        FROM love_diary
+        WHERE user_id = #{userId}
+        ORDER BY create_time DESC
+    </select>
+
+    <select id="findByIdAndUserId" resultType="com.cc.campuscrush.entity.LoveDiary">
+        SELECT id, user_id, title, content, mood, image, create_time
+        FROM love_diary
+        WHERE id = #{id} AND user_id = #{userId}
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO love_diary (user_id, title, content, mood, image)
+        VALUES (#{userId}, #{title}, #{content}, #{mood}, #{image})
+    </insert>
+
+    <update id="update">
+        UPDATE love_diary
+        SET title = #{title}, content = #{content}, mood = #{mood}, image = #{image}
+        WHERE id = #{id} AND user_id = #{userId}
+    </update>
+
+    <delete id="deleteByIdAndUserId">
+        DELETE FROM love_diary WHERE id = #{id} AND user_id = #{userId}
+    </delete>
+
+    <select id="countByUserId" resultType="long">
+        SELECT COUNT(*) FROM love_diary WHERE user_id = #{userId}
+    </select>
+
+</mapper>

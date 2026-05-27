@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cc.campuscrush.mapper.SysUserMapper">
+    
+    <!-- 手机号查重（注册时校验唯一性），不需 password -->
+    <select id="findByPhone" resultType="com.cc.campuscrush.entity.SysUser">
+        SELECT id, username, phone, email, nickname, avatar, gender, intro, create_time
+        FROM sys_user
+        WHERE phone = #{phone}
+    </select>
+
+    <!-- 登录认证使用，需要 password + 登录冻结字段 -->
+    <select id="findByUsername" resultType="com.cc.campuscrush.entity.SysUser">
+        SELECT id, username, password, phone, email, nickname, avatar, gender, intro, create_time,
+               login_fail_count, login_freeze_until
+        FROM sys_user
+        WHERE username = #{username}
+    </select>
+
+    <!-- 仅修改密码时使用，需要 password 字段做旧密码校验 -->
+    <select id="selectByIdWithPassword" resultType="com.cc.campuscrush.entity.SysUser">
+        SELECT id, username, password, phone, email, nickname, avatar, gender, intro, create_time
+        FROM sys_user
+        WHERE id = #{id}
+    </select>
+
+    <insert id="insert" parameterType="com.cc.campuscrush.entity.SysUser" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO sys_user (username, password, phone, email, nickname, avatar, gender, intro, create_time)
+        VALUES (#{username}, #{password}, #{phone}, #{email}, #{nickname}, #{avatar}, #{gender}, #{intro}, NOW())
+    </insert>
+
+    <!-- 通用查询，不包含 password，防止密码哈希泄露到前端 -->
+    <select id="selectById" resultType="com.cc.campuscrush.entity.SysUser">
+        SELECT id, username, phone, email, nickname, avatar, gender, intro, create_time
+        FROM sys_user
+        WHERE id = #{id}
+    </select>
+
+    <update id="updateNickname">
+        UPDATE sys_user 
+        SET nickname = #{nickname} 
+        WHERE id = #{userId}
+    </update>
+
+    <update id="updatePassword">
+        UPDATE sys_user 
+        SET password = #{password} 
+        WHERE id = #{userId}
+    </update>
+
+    <update id="updateAvatar">
+        UPDATE sys_user 
+        SET avatar = #{avatarUrl} 
+        WHERE id = #{userId}
+    </update>
+
+    <update id="updateProfile" parameterType="com.cc.campuscrush.entity.SysUser">
+        UPDATE sys_user 
+        SET nickname = #{nickname}, 
+            gender = #{gender}, 
+            intro = #{intro} 
+        WHERE id = #{id}
+    </update>
+
+    <select id="selectAll" resultType="com.cc.campuscrush.entity.SysUser">
+        SELECT id, username, phone, nickname, avatar, gender, intro, create_time
+        FROM sys_user
+    </select>
+
+    <select id="searchByKeyword" resultType="com.cc.campuscrush.entity.SysUser">
+        SELECT id, username, phone, nickname, avatar, gender, intro, create_time
+        FROM sys_user
+        WHERE username LIKE CONCAT('%', #{keyword}, '%')
+           OR nickname LIKE CONCAT('%', #{keyword}, '%')
+    </select>
+
+    <select id="searchForCouple" resultType="com.cc.campuscrush.entity.SysUser">
+        SELECT id, username, phone, nickname, avatar, gender, intro, create_time
+        FROM sys_user
+        WHERE username LIKE CONCAT('%', #{keyword}, '%')
+           OR phone LIKE CONCAT('%', #{keyword}, '%')
+    </select>
+
+    <select id="selectByIds" resultType="com.cc.campuscrush.entity.SysUser">
+        SELECT id, username, phone, nickname, avatar, gender, intro, create_time
+        FROM sys_user
+        WHERE id in
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
+
+    <!-- 按邮箱查用户（验证码登录用） -->
+    <select id="findByEmail" resultType="com.cc.campuscrush.entity.SysUser">
+        SELECT id, username, password, phone, email, nickname, avatar, gender, intro, create_time,
+               login_fail_count, login_freeze_until
+        FROM sys_user
+        WHERE email = #{email}
+    </select>
+
+    <!-- 更新登录失败次数和冻结时间 -->
+    <update id="updateLoginFail">
+        UPDATE sys_user
+        SET login_fail_count = #{failCount},
+            login_freeze_until = #{freezeUntil}
+        WHERE id = #{id}
+    </update>
+
+    <update id="updateEmail">
+        UPDATE sys_user
+        SET email = #{email}
+        WHERE id = #{userId}
+    </update>
+
+    <!-- 登录成功后重置失败计数 -->
+    <update id="resetLoginFail">
+        UPDATE sys_user
+        SET login_fail_count = 0,
+            login_freeze_until = NULL
+        WHERE id = #{id}
+    </update>
+
+</mapper>

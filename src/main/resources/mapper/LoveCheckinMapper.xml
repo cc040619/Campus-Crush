@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cc.campuscrush.mapper.LoveCheckinMapper">
+
+    <select id="findByCoupleId" resultType="com.cc.campuscrush.entity.LoveCheckin">
+        SELECT id, couple_id, user_id, nickname, avatar, content, images,
+               like_count, comment_count, create_time
+        FROM love_checkin
+        WHERE couple_id = #{coupleId}
+        ORDER BY create_time DESC
+    </select>
+
+    <select id="findById" resultType="com.cc.campuscrush.entity.LoveCheckin">
+        SELECT id, couple_id, user_id, nickname, avatar, content, images,
+               like_count, comment_count, create_time
+        FROM love_checkin
+        WHERE id = #{id}
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO love_checkin (couple_id, user_id, nickname, avatar, content, images, like_count, comment_count)
+        VALUES (#{coupleId}, #{userId}, #{nickname}, #{avatar}, #{content}, #{images}, 0, 0)
+    </insert>
+
+    <update id="updateLikeCount">
+        UPDATE love_checkin SET like_count = #{likeCount} WHERE id = #{id}
+    </update>
+
+    <select id="countByCoupleId" resultType="int">
+        SELECT COUNT(*) FROM love_checkin WHERE couple_id = #{coupleId}
+    </select>
+
+    <select id="findByCoupleIdAndDateRange" resultType="com.cc.campuscrush.entity.LoveCheckin">
+        SELECT id, couple_id, user_id, nickname, avatar, content, images,
+               like_count, comment_count, create_time
+        FROM love_checkin
+        WHERE couple_id = #{coupleId}
+          AND create_time BETWEEN #{startDate} AND CONCAT(#{endDate}, ' 23:59:59')
+        ORDER BY create_time DESC
+    </select>
+
+    <select id="countByCoupleIdAndDate" resultType="int">
+        SELECT COUNT(*) FROM love_checkin
+        WHERE couple_id = #{coupleId}
+          AND DATE(create_time) = #{date}
+    </select>
+
+</mapper>

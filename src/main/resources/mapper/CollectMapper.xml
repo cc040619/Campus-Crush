@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cc.campuscrush.mapper.CollectMapper">
+    <resultMap id="CollectResultMap" type="com.cc.campuscrush.entity.Collect">
+        <id column="id" property="id" />
+        <result column="post_id" property="postId" />
+        <result column="user_id" property="userId" />
+        <result column="create_time" property="createTime" />
+    </resultMap>
+
+    <select id="selectByPostIdAndUserId" resultMap="CollectResultMap">
+        select * from t_collect where post_id = #{postId} and user_id = #{userId}
+    </select>
+
+    <insert id="insert" parameterType="com.cc.campuscrush.entity.Collect">
+        insert into t_collect (post_id, user_id, create_time)
+        values (#{postId}, #{userId}, now())
+    </insert>
+
+    <delete id="deleteById">
+        delete from t_collect where id = #{id}
+    </delete>
+
+    <select id="countByPostIdAndUserId" resultType="int">
+        select count(*) from t_collect where post_id = #{postId} and user_id = #{userId}
+    </select>
+
+    <delete id="deleteByPostId">
+        delete from t_collect where post_id = #{postId}
+    </delete>
+
+    <select id="countByUserId" resultType="java.lang.Long">
+        select count(*) from t_collect where user_id = #{userId}
+    </select>
+</mapper>

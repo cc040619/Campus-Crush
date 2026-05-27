@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cc.campuscrush.mapper.LoveAlbumMapper">
+    
+    <select id="findAllByUserId" resultType="com.cc.campuscrush.entity.LoveAlbum">
+        SELECT id, user_id, photo_name, photo_url, upload_time 
+        FROM love_album 
+        WHERE user_id = #{userId}
+        ORDER BY upload_time DESC
+    </select>
+
+    <select id="findByIdAndUserId" resultType="com.cc.campuscrush.entity.LoveAlbum">
+        SELECT id, user_id, photo_name, photo_url, upload_time 
+        FROM love_album 
+        WHERE id = #{id} AND user_id = #{userId}
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO love_album (user_id, photo_name, photo_url) 
+        VALUES (#{userId}, #{photoName}, #{photoUrl})
+    </insert>
+
+    <update id="update">
+        UPDATE love_album 
+        SET photo_name = #{photoName}, photo_url = #{photoUrl} 
+        WHERE id = #{id} AND user_id = #{userId}
+    </update>
+
+    <delete id="deleteByIdAndUserId">
+        DELETE FROM love_album WHERE id = #{id} AND user_id = #{userId}
+    </delete>
+
+    <select id="countByUserId" resultType="long">
+        SELECT COUNT(*) FROM love_album WHERE user_id = #{userId}
+    </select>
+
+</mapper>

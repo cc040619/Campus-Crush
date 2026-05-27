@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cc.campuscrush.mapper.ChatMapper">
+
+    <resultMap id="ChatResultMap" type="com.cc.campuscrush.entity.Chat">
+        <id property="id" column="id"/>
+        <result property="fromId" column="from_id"/>
+        <result property="toId" column="to_id"/>
+        <result property="content" column="content"/>
+        <result property="createTime" column="create_time"/>
+        <result property="isRead" column="is_read"/>
+        <result property="msgType" column="msg_type"/>
+        <result property="deletedByFrom" column="deleted_by_from"/>
+        <result property="deletedByTo" column="deleted_by_to"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="com.cc.campuscrush.entity.Chat">
+        insert into t_chat (from_id, to_id, content, create_time, is_read, msg_type, deleted_by_from, deleted_by_to)
+        values (#{fromId}, #{toId}, #{content}, now(), #{isRead}, #{msgType}, 0, 0)
+    </insert>
+    <update id="updateIsReadByFromIdAndToId">
+        update t_chat
+        set is_read = #{isRead}
+        where from_id = #{fromId} and to_id = #{toId}
+    </update>
+
+    <select id="selectByUserIdAndFriendId" resultMap="ChatResultMap">
+        (SELECT * FROM t_chat WHERE from_id=#{userId} AND to_id=#{friendId})
+        UNION ALL
+        (SELECT * FROM t_chat WHERE from_id=#{friendId} AND to_id=#{userId})
+        ORDER BY create_time ASC
+    </select>
+
+    <select id="selectByUserIdAndFriendIdWithDelete" resultMap="ChatResultMap">
+        SELECT * FROM (
+            (SELECT * FROM t_chat WHERE from_id=#{userId} AND to_id=#{friendId} AND deleted_by_to = 0)
+            UNION ALL
+            (SELECT * FROM t_chat WHERE from_id=#{friendId} AND to_id=#{userId} AND deleted_by_from = 0)
+        ) AS combined
+        ORDER BY create_time ASC
+    </select>
+
+    <select id="selectByUserId" resultMap="ChatResultMap">
+        select * from t_chat
+        where from_id = #{userId} or to_id = #{userId}
+        order by create_time desc
+    </select>
+
+    <delete id="deleteByUserIdAndFriendId">
+        DELETE FROM t_chat
+        WHERE (from_id = #{userId} AND to_id = #{friendId})
+           OR (from_id = #{friendId} AND to_id = #{userId})
+    </delete>
+
+    <update id="updateDeleteByFrom">
+        UPDATE t_chat
+        SET deleted_by_from = 1
+        WHERE from_id = #{fromId} AND to_id = #{toId}
+    </update>
+
+    <update id="updateDeleteByTo">
+        UPDATE t_chat
+        SET deleted_by_to = 1
+        WHERE from_id = #{fromId} AND to_id = #{toId}
+    </update>
+
+    <insert id="insertComplaint">
+        INSERT INTO t_complaint (complaint_user_id, target_user_id, session_id, reason, create_time)
+        VALUES (#{complaintUserId}, #{targetUserId}, #{sessionId}, #{reason}, NOW())
+    </insert>
+
+</mapper>

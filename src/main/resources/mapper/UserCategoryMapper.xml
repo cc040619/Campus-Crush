@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cc.campuscrush.mapper.UserCategoryMapper">
+
+    <select id="selectByUserId" resultType="com.cc.campuscrush.entity.UserCategory">
+        SELECT id, user_id, categories, create_time, update_time 
+        FROM t_user_category 
+        WHERE user_id = #{userId}
+    </select>
+
+    <insert id="insert" parameterType="com.cc.campuscrush.entity.UserCategory" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO t_user_category (user_id, categories, create_time)
+        VALUES (#{userId}, #{categories}, NOW())
+    </insert>
+
+    <update id="updateCategories">
+        UPDATE t_user_category 
+        SET categories = #{categories}, update_time = NOW()
+        WHERE user_id = #{userId}
+    </update>
+
+    <delete id="deleteByUserId">
+        DELETE FROM t_user_category WHERE user_id = #{userId}
+    </delete>
+
+</mapper>

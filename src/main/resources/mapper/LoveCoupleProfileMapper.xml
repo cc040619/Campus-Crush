@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cc.campuscrush.mapper.LoveCoupleProfileMapper">
+
+    <select id="findByCoupleId" resultType="com.cc.campuscrush.entity.LoveCoupleProfile">
+        SELECT id, couple_id, user_id, user_name, user_avatar,
+               partner_id, partner_name, partner_avatar,
+               start_date, create_time, update_time
+        FROM love_couple_profile
+        WHERE couple_id = #{coupleId}
+    </select>
+
+    <select id="findByUserId" resultType="com.cc.campuscrush.entity.LoveCoupleProfile">
+        SELECT id, couple_id, user_id, user_name, user_avatar,
+               partner_id, partner_name, partner_avatar,
+               start_date, create_time, update_time
+        FROM love_couple_profile
+        WHERE user_id = #{userId}
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO love_couple_profile (couple_id, user_id, user_name, user_avatar,
+               partner_id, partner_name, partner_avatar, start_date)
+        VALUES (#{coupleId}, #{userId}, #{userName}, #{userAvatar},
+               #{partnerId}, #{partnerName}, #{partnerAvatar}, #{startDate})
+    </insert>
+
+    <update id="update">
+        UPDATE love_couple_profile
+        <set>
+            <if test="coupleId != null">couple_id = #{coupleId},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="userName != null">user_name = #{userName},</if>
+            <if test="userAvatar != null">user_avatar = #{userAvatar},</if>
+            <if test="partnerId != null">partner_id = #{partnerId},</if>
+            <if test="partnerName != null">partner_name = #{partnerName},</if>
+            <if test="partnerAvatar != null">partner_avatar = #{partnerAvatar},</if>
+            <if test="startDate != null">start_date = #{startDate},</if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <!-- 解除绑定：显式置空伴侣字段 -->
+    <update id="unbind">
+        UPDATE love_couple_profile
+        SET partner_id = NULL,
+            partner_name = NULL,
+            partner_avatar = NULL
+        WHERE user_id = #{userId}
+    </update>
+
+    <delete id="deleteByUserId">
+        DELETE FROM love_couple_profile WHERE user_id = #{userId}
+    </delete>
+
+</mapper>

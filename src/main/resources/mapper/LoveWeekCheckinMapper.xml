@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cc.campuscrush.mapper.LoveWeekCheckinMapper">
+
+    <select id="findByCoupleIdAndWeekStart" resultType="com.cc.campuscrush.entity.LoveWeekCheckin">
+        SELECT id, couple_id, week_start, day_num, checked, user_id, checkin_date, create_time, update_time
+        FROM love_week_checkin
+        WHERE couple_id = #{coupleId} AND week_start = #{weekStart}
+        ORDER BY day_num
+    </select>
+
+    <select id="findByCoupleIdAndWeekDay" resultType="com.cc.campuscrush.entity.LoveWeekCheckin">
+        SELECT id, couple_id, week_start, day_num, checked, user_id, checkin_date, create_time, update_time
+        FROM love_week_checkin
+        WHERE couple_id = #{coupleId} AND week_start = #{weekStart} AND day_num = #{dayNum}
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO love_week_checkin (couple_id, week_start, day_num, checked, user_id, checkin_date)
+        VALUES (#{coupleId}, #{weekStart}, #{dayNum}, #{checked}, #{userId}, #{checkinDate})
+    </insert>
+
+    <update id="update">
+        UPDATE love_week_checkin
+        SET checked = #{checked}, user_id = #{userId}, checkin_date = #{checkinDate}
+        WHERE couple_id = #{coupleId} AND week_start = #{weekStart} AND day_num = #{dayNum}
+    </update>
+
+    <insert id="upsert">
+        INSERT INTO love_week_checkin (couple_id, week_start, day_num, checked, user_id, checkin_date)
+        VALUES (#{coupleId}, #{weekStart}, #{dayNum}, #{checked}, #{userId}, #{checkinDate})
+        ON DUPLICATE KEY UPDATE
+            checked = VALUES(checked),
+            user_id = VALUES(user_id),
+            checkin_date = VALUES(checkin_date)
+    </insert>
+
+</mapper>

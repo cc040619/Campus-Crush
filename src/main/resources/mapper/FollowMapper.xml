@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cc.campuscrush.mapper.FollowMapper">
+    <resultMap id="FollowResultMap" type="com.cc.campuscrush.entity.Follow">
+        <id column="id" property="id" />
+        <result column="follower_id" property="followerId" />
+        <result column="following_id" property="followingId" />
+        <result column="create_time" property="createTime" />
+    </resultMap>
+
+    <select id="selectByFollowerIdAndFollowingId" resultMap="FollowResultMap">
+        select * from t_follow where follower_id = #{followerId} and following_id = #{followingId}
+    </select>
+
+    <insert id="insert" parameterType="com.cc.campuscrush.entity.Follow">
+        insert into t_follow (follower_id, following_id, create_time)
+        values (#{followerId}, #{followingId}, now())
+    </insert>
+
+    <delete id="deleteById">
+        delete from t_follow where id = #{id}
+    </delete>
+
+    <select id="selectByFollowerId" resultMap="FollowResultMap">
+        select * from t_follow where follower_id = #{followerId} order by create_time desc
+    </select>
+
+    <select id="selectByFollowingId" resultMap="FollowResultMap">
+        select * from t_follow where following_id = #{followingId} order by create_time desc
+    </select>
+
+    <select id="countByFollowerIdAndFollowingId" resultType="int">
+        select count(*) from t_follow where follower_id = #{followerId} and following_id = #{followingId}
+    </select>
+
+    <select id="countByFollowingId" resultType="java.lang.Long">
+        select count(*) from t_follow where following_id = #{followingId}
+    </select>
+
+    <select id="countByFollowerId" resultType="java.lang.Long">
+        select count(*) from t_follow where follower_id = #{followerId}
+    </select>
+
+    <select id="countFollowerCounts" resultType="map">
+        select following_id as user_id, count(*) as count 
+        from t_follow 
+        where following_id in 
+        <foreach collection="userIds" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+        group by following_id
+    </select>
+
+    <select id="countFollowingCounts" resultType="map">
+        select follower_id as user_id, count(*) as count 
+        from t_follow 
+        where follower_id in 
+        <foreach collection="userIds" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+        group by follower_id
+    </select>
+
+    <select id="selectFollowingIds" resultType="long">
+        select following_id from t_follow where follower_id = #{userId}
+    </select>
+</mapper>

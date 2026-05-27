@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cc.campuscrush.mapper.LoveCheckinLikeMapper">
+
+    <select id="findByRecordIdAndUserId" resultType="com.cc.campuscrush.entity.LoveCheckinLike">
+        SELECT id, record_id, user_id, create_time
+        FROM love_checkin_like
+        WHERE record_id = #{recordId} AND user_id = #{userId}
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO love_checkin_like (record_id, user_id)
+        VALUES (#{recordId}, #{userId})
+    </insert>
+
+    <delete id="delete">
+        DELETE FROM love_checkin_like
+        WHERE record_id = #{recordId} AND user_id = #{userId}
+    </delete>
+
+    <select id="countByRecordId" resultType="int">
+        SELECT COUNT(*) FROM love_checkin_like WHERE record_id = #{recordId}
+    </select>
+
+</mapper>

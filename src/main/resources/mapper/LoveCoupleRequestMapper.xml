@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cc.campuscrush.mapper.LoveCoupleRequestMapper">
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO love_couple_request (from_user_id, to_user_id, start_date, status)
+        VALUES (#{fromUserId}, #{toUserId}, #{startDate}, #{status})
+    </insert>
+
+    <select id="findById" resultType="com.cc.campuscrush.entity.LoveCoupleRequest">
+        SELECT r.*, u.nickname AS from_user_name, u.avatar AS from_user_avatar
+        FROM love_couple_request r
+        LEFT JOIN sys_user u ON u.id = r.from_user_id
+        WHERE r.id = #{id}
+    </select>
+
+    <select id="findByToUserId" resultType="com.cc.campuscrush.entity.LoveCoupleRequest">
+        SELECT r.*, u.nickname AS from_user_name, u.avatar AS from_user_avatar
+        FROM love_couple_request r
+        LEFT JOIN sys_user u ON u.id = r.from_user_id
+        WHERE r.to_user_id = #{toUserId}
+        ORDER BY r.create_time DESC
+    </select>
+
+    <select id="findByFromUserId" resultType="com.cc.campuscrush.entity.LoveCoupleRequest">
+        SELECT r.*, u.nickname AS from_user_name, u.avatar AS from_user_avatar
+        FROM love_couple_request r
+        LEFT JOIN sys_user u ON u.id = r.to_user_id
+        WHERE r.from_user_id = #{fromUserId}
+        ORDER BY r.create_time DESC
+    </select>
+
+    <update id="updateStatus">
+        UPDATE love_couple_request SET status = #{status} WHERE id = #{id}
+    </update>
+
+    <select id="findPendingBetweenUsers" resultType="com.cc.campuscrush.entity.LoveCoupleRequest">
+        SELECT * FROM love_couple_request
+        WHERE from_user_id = #{fromUserId} AND to_user_id = #{toUserId} AND status = 0
+    </select>
+
+</mapper>

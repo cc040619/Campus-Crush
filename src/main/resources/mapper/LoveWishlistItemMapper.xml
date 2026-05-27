@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cc.campuscrush.mapper.LoveWishlistItemMapper">
+
+    <select id="findByCoupleId" resultType="com.cc.campuscrush.entity.LoveWishlistItem">
+        SELECT id, couple_id, user_id, title, description, completed, create_time
+        FROM love_wishlist_item
+        WHERE couple_id = #{coupleId}
+        ORDER BY create_time DESC
+    </select>
+
+    <select id="findById" resultType="com.cc.campuscrush.entity.LoveWishlistItem">
+        SELECT id, couple_id, user_id, title, description, completed, create_time
+        FROM love_wishlist_item
+        WHERE id = #{id}
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO love_wishlist_item (couple_id, user_id, title, description, completed)
+        VALUES (#{coupleId}, #{userId}, #{title}, #{description}, 0)
+    </insert>
+
+    <update id="updateCompleted">
+        UPDATE love_wishlist_item SET completed = #{completed} WHERE id = #{id}
+    </update>
+
+    <delete id="deleteById">
+        DELETE FROM love_wishlist_item WHERE id = #{id}
+    </delete>
+
+</mapper>

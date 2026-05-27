@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cc.campuscrush.mapper.InteractionNoticeMapper">
+
+    <insert id="insert" parameterType="com.cc.campuscrush.entity.InteractionNotice">
+        INSERT INTO t_interaction_notice (user_id, from_user_id, from_user_nickname, 
+               from_user_avatar, post_id, post_title, type, create_time, is_read)
+        VALUES (#{userId}, #{fromUserId}, #{fromUserNickname}, 
+                #{fromUserAvatar}, #{postId}, #{postTitle}, #{type}, #{createTime}, #{isRead})
+    </insert>
+
+    <select id="selectByUserId" parameterType="java.lang.Long" resultType="com.cc.campuscrush.entity.InteractionNotice">
+        SELECT id, user_id as userId, from_user_id as fromUserId, from_user_nickname as fromUserNickname, 
+               from_user_avatar as fromUserAvatar, post_id as postId, post_title as postTitle,
+               type, create_time as createTime, is_read as isRead
+        FROM t_interaction_notice
+        WHERE user_id = #{userId}
+        ORDER BY create_time DESC
+    </select>
+
+    <select id="countUnreadByUserId" parameterType="java.lang.Long" resultType="java.lang.Integer">
+        SELECT COUNT(*) FROM t_interaction_notice WHERE user_id = #{userId} AND is_read = 0
+    </select>
+
+    <update id="updateIsRead" parameterType="java.lang.Long">
+        UPDATE t_interaction_notice SET is_read = 1 WHERE user_id = #{userId}
+    </update>
+
+    <update id="updateNoticeIsRead">
+        UPDATE t_interaction_notice SET is_read = 1 WHERE id = #{noticeId} AND user_id = #{userId}
+    </update>
+
+    <update id="updateFromUserNickname">
+        UPDATE t_interaction_notice SET from_user_nickname = #{newNickname} WHERE from_user_id = #{fromUserId}
+    </update>
+
+    <select id="selectByUserIdAndType" parameterType="java.lang.Long" resultType="com.cc.campuscrush.entity.InteractionNotice">
+        SELECT id, user_id as userId, from_user_id as fromUserId, from_user_nickname as fromUserNickname, 
+               from_user_avatar as fromUserAvatar, post_id as postId, post_title as postTitle,
+               type, create_time as createTime, is_read as isRead
+        FROM t_interaction_notice
+        WHERE user_id = #{userId} AND type = #{type}
+        ORDER BY create_time DESC
+    </select>
+
+    <select id="countUnreadByUserIdAndType" parameterType="java.lang.Long" resultType="java.lang.Integer">
+        SELECT COUNT(*) FROM t_interaction_notice WHERE user_id = #{userId} AND type = #{type} AND is_read = 0
+    </select>
+
+    <update id="updateIsReadByType">
+        UPDATE t_interaction_notice SET is_read = 1 WHERE user_id = #{userId} AND type = #{type}
+    </update>
+
+    <delete id="deleteAllReadByUserId" parameterType="java.lang.Long">
+        DELETE FROM t_interaction_notice WHERE user_id = #{userId} AND is_read = 1
+    </delete>
+
+    <delete id="deleteAllReadByUserIdAndType">
+        DELETE FROM t_interaction_notice WHERE user_id = #{userId} AND is_read = 1 AND type = #{type}
+    </delete>
+
+</mapper>
